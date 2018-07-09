@@ -7,7 +7,9 @@ import random
 import numpy as np
 import wx
 
-
+"""
+完成的一个数独游戏的小程序，学习Python迈出的第一步
+"""
 def init_new_data():
     one_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     two_list = []
