@@ -150,7 +150,7 @@ class ImgToolUI(wx.Frame):
 		# 点击OK后，将路径显示到输入框中
 		if file_dialog.ShowModal() == wx.ID_OK:
 			# 在输入框中显示路径
-			self.tc_file.SetLabel(file_dialog.GetPath())
+			self.tc_file.SetValue(file_dialog.GetPath())
 		file_dialog.Destroy()
 	
 	# 选择文件夹
@@ -160,7 +160,7 @@ class ImgToolUI(wx.Frame):
 		# 点击OK
 		if dlg.ShowModal() == wx.ID_OK:
 			# 在输入框中显示文件夹路径
-			self.tc_dir.SetLabel(dlg.GetPath())
+			self.tc_dir.SetValue(dlg.GetPath())
 		dlg.Destroy()
 	
 	# 选择保存路径
@@ -170,13 +170,17 @@ class ImgToolUI(wx.Frame):
 		# 点击OK
 		if dlg.ShowModal() == wx.ID_OK:
 			# 在输入框中显示文件夹路径
-			self.tc_save.SetLabel(dlg.GetPath())
+			self.tc_save.SetValue(dlg.GetPath())
 		dlg.Destroy()
 	
 	# 压缩单张图片
 	def exc_img(self, event):
-		result = ImgTool.img_cop(self=ImgTool, f=self.tc_file.GetLabel(), w=self.tc_width.GetLabel(), h=self.tc_height.GetLabel(), nf=self.tc_save.GetLabel())
+		w, h = self.wh_default()
+		# 调用工具
+		result = ImgTool.img_cop(self=ImgTool, f=self.tc_file.GetValue(), w=int(w),
+								 h=int(h), nf=self.tc_save.GetValue())
 		if result:
+			# 弹出提示框
 			wx.MessageDialog(self, '完成', caption='Result').ShowModal()
 		else:
 			wx.MessageDialog(self, '失败', caption='Result').ShowModal()
@@ -184,10 +188,30 @@ class ImgToolUI(wx.Frame):
 	
 	# 批量压缩
 	def exc_batch(self, event):
-		print(self.tc_dir.GetLabel())
+		w, h = self.wh_default()
+		# 调用工具
+		result = ImgTool.img_dir(self=ImgTool, d=self.tc_dir.GetValue(), w=int(w),
+								 h=int(h), nf=self.tc_save.GetValue())
 		pass
+	
+	# 设置宽高默认值
+	def wh_default(self):
+		w, h = '', ''
+		# 判断宽是否为空
+		if not self.tc_width.GetValue().strip():
+			w = '600'
+		else:
+			w = self.tc_width.GetValue()
+		# 判断高是否为空
+		if not self.tc_height.GetValue().strip():
+			h = '400'
+		else:
+			h = self.tc_height.GetValue()
+		# 返回宽，高
+		return w, h
 
 
+# 主调用函数
 def main_show():
 	app = wx.App()
 	ImgToolUI()
